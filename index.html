@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Static Web App</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="card">
+    <h1>My Static Web App</h1>
+    <p>Enter your name to try a simple interaction.</p>
+
+    <form id="greeting-form">
+      <label for="name">Your name</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        placeholder="Enter your name"
+        maxlength="80"
+        required
+      >
+      <button type="submit">Say hello</button>
+    </form>
+
+    <p id="message" role="status"></p>
+  </main>
+</body>
+</html>
