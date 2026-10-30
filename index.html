@@ -3,37 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Static Web App</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="script.js" defer></script>
+  <title>Trailer Condition Form</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="card">
-    <h1>My Static Web App</h1>
-    <p>Enter your name to try a simple interaction.</p>
+    <h1>Trailer Condition</h1>
+    <form>
+      <label for="trailer-no">Trailer no</label>
+      <input id="trailer-no" name="trailerNo" type="text" required>
 
-    <form id="greeting-form">
-      <label for="name">Your name</label>
-      <input
-        id="name"
-        name="name"
-        type="text"
-        placeholder="Enter your name"
-        maxlength="80"
-        required
-      >
-      <label for="photo">Take a photo</label>
-      <input
-        id="photo"
-        name="photo"
-        type="file"
-        accept="image/*"
-        capture="environment"
-      >
-      <button type="submit">Say hello</button>
+      <label for="carrier">Carrier</label>
+      <input id="carrier" name="carrier" type="text" required>
+
+      <label for="pickup-location">Pickup location</label>
+      <input id="pickup-location" name="pickupLocation" type="text" required>
+
+      <fieldset>
+        <legend>Do you see any existing damage?</legend>
+        <div class="radio-options">
+          <label><input name="existingDamage" type="radio" value="yes" required> Yes</label>
+          <label><input name="existingDamage" type="radio" value="no"> No</label>
+        </div>
+      </fieldset>
+
+      <label for="damaged">What is damaged</label>
+      <input id="damaged" name="damaged" type="text">
+
+      <label for="description">Description</label>
+      <input id="description" name="description" type="text">
+
+      <button type="submit">Submit</button>
     </form>
-
-    <p id="message" role="status"></p>
   </main>
 </body>
 </html>
