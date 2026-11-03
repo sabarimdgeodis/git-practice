@@ -91,7 +91,12 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
-#message {
+#form-status {
   min-height: 24px;
   font-weight: bold;
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
 }

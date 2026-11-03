@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trailer Condition Form</title>
   <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
   <main class="card">
     <h1>Trailer Condition</h1>
-    <form>
+    <form id="trailer-form" enctype="multipart/form-data">
       <label for="trailer-no">Trailer no</label>
       <input id="trailer-no" name="trailerNo" type="text" required>
 
@@ -41,6 +42,7 @@
 
       <button type="submit">Submit</button>
     </form>
+    <p id="form-status" role="status" aria-live="polite"></p>
   </main>
 </body>
 </html>
