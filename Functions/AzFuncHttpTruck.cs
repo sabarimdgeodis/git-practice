@@ -8,17 +8,22 @@ namespace TruckGeodis;
 public class AzFuncHttpTruck
 {
     private readonly ILogger<AzFuncHttpTruck> _logger;
+    private readonly SharePointTruckRequestService _sharePoint;
 
-    public AzFuncHttpTruck(ILogger<AzFuncHttpTruck> logger)
+    public AzFuncHttpTruck(
+        ILogger<AzFuncHttpTruck> logger,
+        SharePointTruckRequestService sharePoint)
     {
         _logger = logger;
+        _sharePoint = sharePoint;
     }
 
     [Function("AzFuncHttpTruck")]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req,
+        CancellationToken cancellationToken)
     {
-        var form = await req.ReadFormAsync();
+        var form = await req.ReadFormAsync(cancellationToken);
         var trailerNo = form["trailerNo"].ToString().Trim();
         var carrier = form["carrier"].ToString().Trim();
         var pickupLocation = form["pickupLocation"].ToString().Trim();
@@ -35,34 +40,35 @@ public class AzFuncHttpTruck
             });
         }
 
-        var photoUploads = new List<object>();
-        foreach (var fieldName in new[] { "frontPhoto", "driverSidePhoto" })
-        {
-            var file = form.Files.GetFile(fieldName);
-            if (file is not null)
-            {
-                photoUploads.Add(new
-                {
-                    field = fieldName,
-                    fileName = Path.GetFileName(file.FileName),
-                    contentType = file.ContentType,
-                    size = file.Length
-                });
-            }
-        }
+        var submission = await _sharePoint.CreateRequestAndUploadPhotosAsync(
+            trailerNo,
+            carrier,
+            pickupLocation,
+            existingDamage == "yes" ? "Yes" : "No",
+            form["damaged"].ToString().Trim(),
+            form["description"].ToString().Trim(),
+            form.Files.GetFile("frontPhoto"),
+            form.Files.GetFile("driverSidePhoto"),
+            cancellationToken);
 
-        _logger.LogInformation("Received trailer condition form for trailer {TrailerNo}.", trailerNo);
+        _logger.LogInformation(
+            "Created SharePoint truck request {ItemId} ({UniqueId}) for trailer {TrailerNo}.",
+            submission.ItemId,
+            submission.UniqueId,
+            trailerNo);
 
         return new OkObjectResult(new
         {
             message = "Trailer condition form submitted successfully.",
+            itemId = submission.ItemId,
+            uniqueId = submission.UniqueId,
             trailerNo,
             carrier,
             pickupLocation,
-            existingDamage,
+            existingDamage = existingDamage == "yes" ? "Yes" : "No",
             damaged = form["damaged"].ToString(),
             description = form["description"].ToString(),
-            photos = photoUploads
+            photos = submission.PhotoUrls
         });
     }
 }
