@@ -40,16 +40,31 @@ public class AzFuncHttpTruck
             });
         }
 
-        var submission = await _sharePoint.CreateRequestAndUploadPhotosAsync(
-            trailerNo,
-            carrier,
-            pickupLocation,
-            existingDamage == "yes" ? "Yes" : "No",
-            form["damaged"].ToString().Trim(),
-            form["description"].ToString().Trim(),
-            form.Files.GetFile("frontPhoto"),
-            form.Files.GetFile("driverSidePhoto"),
-            cancellationToken);
+        SharePointSubmissionResult submission;
+        try
+        {
+            submission = await _sharePoint.CreateRequestAndUploadPhotosAsync(
+                trailerNo,
+                carrier,
+                pickupLocation,
+                existingDamage == "yes" ? "Yes" : "No",
+                form["damaged"].ToString().Trim(),
+                form["description"].ToString().Trim(),
+                form.Files.GetFile("frontPhoto"),
+                form.Files.GetFile("driverSidePhoto"),
+                cancellationToken);
+        }
+        catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogError(exception, "Failed to save the truck request to SharePoint.");
+            return new ObjectResult(new
+            {
+                message = "The submission could not be saved to SharePoint. Check the Function logs for details."
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+        }
 
         _logger.LogInformation(
             "Created SharePoint truck request {ItemId} ({UniqueId}) for trailer {TrailerNo}.",
