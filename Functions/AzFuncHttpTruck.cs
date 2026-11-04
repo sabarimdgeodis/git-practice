@@ -67,7 +67,7 @@ public class AzFuncHttpTruck
         }
 
         _logger.LogInformation(
-            "Created SharePoint truck request {ItemId} ({UniqueId}) for trailer {TrailerNo}.",
+            "Created truck request {ItemId} with unique ID {UniqueId} for trailer {TrailerNo}.",
             submission.ItemId,
             submission.UniqueId,
             trailerNo);
